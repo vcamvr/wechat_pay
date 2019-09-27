@@ -114,6 +114,40 @@ func (c *Client) postWithCert(url string, params Params) (string, error) {
 	return string(res), nil
 }
 
+// https need cert post
+func (c *Client) postWithCertPkcs12(url string, params Params) (string, error) {
+	if c.account.pemCert == nil || c.account.pemKey == nil {
+		return "", errors.New("证书数据为空")
+	}
+
+	// 将pkcs12证书转成pem
+	// cert := pkcs12ToPem(c.account.certData, c.account.mchID)
+	cert, err := tls.X509KeyPair(c.account.pemCert, c.account.pemKey)
+	if err != nil {
+		return "", err
+	}
+
+	config := &tls.Config{
+		Certificates: []tls.Certificate{cert},
+	}
+	transport := &http.Transport{
+		TLSClientConfig:    config,
+		DisableCompression: true,
+	}
+	h := &http.Client{Transport: transport}
+	p := c.fillRequestData(params)
+	response, err := h.Post(url, bodyType, strings.NewReader(MapToXml(p)))
+	if err != nil {
+		return "", err
+	}
+	defer response.Body.Close()
+	res, err := ioutil.ReadAll(response.Body)
+	if err != nil {
+		return "", err
+	}
+	return string(res), nil
+}
+
 // 生成带有签名的xml字符串
 func (c *Client) generateSignedXml(params Params) string {
 	sign := c.Sign(params)

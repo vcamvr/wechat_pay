@@ -18,6 +18,8 @@ type Account struct {
 	subMchId  string
 	apiKey    string
 	certData  []byte
+	pemCert   []byte
+	pemKey    []byte
 	isSandbox bool
 }
 
@@ -55,4 +57,10 @@ func (a *Account) SetCertData(certPath string) {
 		return
 	}
 	a.certData = certData
+}
+
+// 设置pem证书
+func (a *Account) SetCertPemData(cert []byte, key []byte) {
+	a.pemCert = cert
+	a.pemKey = key
 }
