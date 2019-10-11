@@ -85,7 +85,7 @@ func (c *Client) postWithoutCert(url string, params Params) (string, error) {
 }
 
 // https need cert post
-func (c *Client) postWithCert(url string, params Params) (string, error) {
+func (c *Client) postWithCertPkcs12(url string, params Params) (string, error) {
 	if c.account.certData == nil {
 		return "", errors.New("证书数据为空")
 	}
@@ -115,7 +115,7 @@ func (c *Client) postWithCert(url string, params Params) (string, error) {
 }
 
 // https need cert post
-func (c *Client) postWithCertPkcs12(url string, params Params) (string, error) {
+func (c *Client) postWithCert(url string, params Params) (string, error) {
 	if c.account.pemCert == nil || c.account.pemKey == nil {
 		return "", errors.New("证书数据为空")
 	}
