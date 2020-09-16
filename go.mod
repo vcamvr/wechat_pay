@@ -1,4 +1,4 @@
-module github.com/lyphilip/wechat_pay
+module github.com/vcamvr/wechat_pay
 
 go 1.13
 
